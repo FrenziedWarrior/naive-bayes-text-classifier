@@ -1,1 +1,2 @@
-# Naive Bayes Text Classifier for Fake/Genuine Hotel Reviews
+# Naive Bayes text classifier for Deceptive/Truthful Hotel Reviews
+
