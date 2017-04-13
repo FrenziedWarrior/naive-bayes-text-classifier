@@ -1,8 +1,8 @@
 # Naive Bayes Text Classifier - Hotel Reviews Dataset
 (Written originally for a Natural Language Processing course assignment) 
 
-Training set: 1280 reviews 
-Test set: 320 reviews 
+Training set: 1280 reviews  
+Test set: 320 reviews  
 Labels (2 per review): [deceptive(D), truthful(T)] and [positive(P), negative(N)] 
 
 Problem could be interpreted in following ways:
