@@ -1,19 +1,17 @@
-# This is the script that learns a Naive Bayes model from training data(reviews) and writes output to nbmodel.txt
-# i/p: train-text.txt, train-labels.txt
-# o/p: nbmodel.txt
+# This is the script that learns a Naive Bayes model from training data (reviews)
 # Reads the reviews and annotated labels from i/p files and computes model parameters training data
+# i/p: dev-train-text.txt, dev-train-labels.txt
 
-#NO_OF_REVIEWS = 1280
-#TRAINING_SPLIT = 0.75
-#DEV_TEST_SPLIT = 0.25
+# NO_OF_REVIEWS = 1280
+# TRAINING_SPLIT = 0.75
+# DEV_TEST_SPLIT = 0.25
 
-#1 -> Read reviews line by line and perform tokenization (separate text into word tokens)
-#1a -> Read corresponding labels assigned to the review and store required counts
-#2 -> Maintain counts of term occurrences in documents of both classes in different data structures (dict)
-#3 -> Count total number of word tokens in documents of all classes
-#4 -> 
+# 1 -> Read reviews line by line and perform tokenization (separate text into word tokens)
+#   a: Read corresponding labels assigned to the review and store required counts
+# 2 -> Maintain counts of term occurrences in documents of both classes in different data structures (dict)
+# 3 -> Count total number of word tokens in documents of all classes
 
-from math import log, log2
+from math import log
 import sys
 import operator
 
@@ -21,21 +19,38 @@ REVIEWS_FILE_PATH = sys.argv[1]
 LABELS_FILE_PATH = sys.argv[2]
 MODEL_FILE_PATH = 'nbmodel.txt'
 
-dict_dt = {'deceptive': 0, 'truthful': 0}
-dt_term_count = { 'deceptive': {}, 'truthful': {} }
-dict_pn = {'positive': 0, 'negative': 0}
-pn_term_count = { 'positive': {}, 'negative': {} }
+dict_dt = {
+    'deceptive': 0,
+    'truthful': 0
+}
+dt_term_count = {
+    'deceptive': {},
+    'truthful': {}
+}
 
-#class_doubles = ['deceptive positive', 'deceptive negative', 'truthful positive', 'truthful negative']
+dict_pn = {
+    'positive': 0,
+    'negative': 0
+}
+
+pn_term_count = {
+    'positive': {},
+    'negative': {}
+}
+
+# four_way_labels = ['deceptive positive', 'deceptive negative', 'truthful positive', 'truthful negative']
 
 dict_reviews = {}
 dict_labels = {}
 list_vocab = []
 
-stop_word_list = ['and', 'a', 'an', 'the', 'but', 'yet', 'or', 'so', 'also', 'of', 'i', 'to', 'it', 'for', 'was', 'in', 'we',
-                 'is', 'at', 'my', 'that', 'on', 'our', 'this', 'they', 'he', 'she', 'had', 'were', 'with', 'be', 'you', 'are',
-                 'from', 'there', 'as', 'have', 'when', 'would', 'my', 'me', 'did', 'us','chicago']
+stop_word_list = [
+    'and', 'a', 'an', 'the', 'but', 'yet', 'or', 'so', 'also', 'of', 'i', 'to', 'it', 'for', 'was', 'in', 'we',
+    'is', 'at', 'my', 'that', 'on', 'our', 'this', 'they', 'he', 'she', 'had', 'were', 'with', 'be', 'you', 'are',
+    'from', 'there', 'as', 'have', 'when', 'would', 'my', 'me', 'did', 'us','chicago'
+]
                  
+
 def filter_stop_words(l):
     return [item for item in l if item not in stop_word_list]
     
@@ -83,7 +98,6 @@ with open(REVIEWS_FILE_PATH, 'r') as f_text, open(LABELS_FILE_PATH, 'r') as f_la
                 pn_vocab[term] += 1
 
 
-
 dec_prior = log(dict_dt['deceptive']/(dict_dt['deceptive'] + dict_dt['truthful']))
 tru_prior = log(dict_dt['truthful']/(dict_dt['deceptive'] + dict_dt['truthful']))
 pos_prior = log(dict_pn['positive']/(dict_pn['positive'] + dict_pn['negative']))
@@ -101,14 +115,14 @@ target_model.write('P(\'positive\') ' + str(dict_pn['positive']) + ' ' + str(pos
 target_model.write('P(\'negative\') ' + str(dict_pn['negative']) + ' ' + str(neg_prior) + '\n')
 
 
-#sorted_freq1 = dict(sorted(dec_word_list.items(), key=operator.itemgetter(1), reverse=True)[:15])
-#sorted_freq2 = dict(sorted(tru_word_list.items(), key=operator.itemgetter(1), reverse=True)[:15])
-#sorted_freq3 = dict(sorted(pos_word_list.items(), key=operator.itemgetter(1), reverse=True)[:15])
-#sorted_freq4 = dict(sorted(neg_word_list.items(), key=operator.itemgetter(1), reverse=True)[:15])
-#print(sorted_freq1) 
-#print(sorted_freq2) 
-#print(sorted_freq3) 
-#print(sorted_freq4)
+# sorted_freq1 = dict(sorted(dec_word_list.items(), key=operator.itemgetter(1), reverse=True)[:15])
+# sorted_freq2 = dict(sorted(tru_word_list.items(), key=operator.itemgetter(1), reverse=True)[:15])
+# sorted_freq3 = dict(sorted(pos_word_list.items(), key=operator.itemgetter(1), reverse=True)[:15])
+# sorted_freq4 = dict(sorted(neg_word_list.items(), key=operator.itemgetter(1), reverse=True)[:15])
+# print(sorted_freq1)
+# print(sorted_freq2)
+# print(sorted_freq3)
+# print(sorted_freq4)
 
 list_vocab = set(list(dec_word_list.keys()) + list(tru_word_list.keys()))
 
@@ -120,7 +134,6 @@ for word in list_vocab:
         dec_token = False
         rc_dec = 0
     
-
     if word in tru_word_list:
         tru_token = True
         rc_tru = tru_word_list[word]
@@ -186,7 +199,6 @@ for word in sorted_vocab:
         target_model.write(str(0) + ' ')
 #        print(str(0), end=' ')
 
-
     # Word Token raw count - (negative)
     if word in neg_word_list: 
         target_model.write(str(neg_word_list[word]) + ' ')
@@ -201,7 +213,6 @@ for word in sorted_vocab:
     else:
         target_model.write(str(0) + ' ')
 
-        
     # P(Tk/C) probability - (truthful)
     if word in tru_word_list: 
         target_model.write(str(log(tru_word_list[word]/len_tru_docs)) + ' ')
@@ -220,14 +231,12 @@ for word in sorted_vocab:
     else:
         target_model.write(str(0) + ' ')
     
-
     # log P(Tk/C) probability after smoothing - (deceptive)
     if word in dec_word_list:
         target_model.write(str(log( (dec_word_list[word]+1) / (len_dec_docs+len(sorted_vocab)) )) + ' ')
     else:
         target_model.write(str(log( 1/(len_dec_docs+len(sorted_vocab)) )) + ' ')
 
-        
     # log P(Tk/C) probability after smoothing - (truthful)
     if word in tru_word_list: 
         target_model.write(str(log( (tru_word_list[word]+1) / (len_tru_docs+len(sorted_vocab)) )) + ' ')
@@ -240,16 +249,8 @@ for word in sorted_vocab:
     else:
         target_model.write(str(log( 1/(len_pos_docs+len(sorted_vocab)) )) + ' ')
 
-        
     # log P(Tk/C) probability after smoothing - (negative)
     if word in neg_word_list: 
         target_model.write(str(log( (neg_word_list[word]+1) / (len_neg_docs+len(sorted_vocab)) )) + '\n')
     else:
         target_model.write(str(log( 1/(len_neg_docs+len(sorted_vocab)) )) + '\n')
-    
-    
-    
-    
-    
-    
-    
