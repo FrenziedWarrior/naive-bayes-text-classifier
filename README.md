@@ -11,4 +11,6 @@ Problem could be interpreted in following ways:
 - 2 separate binary classification tasks (label each review D or T, P or N)
 - single 4-way classification task (label each review DP, DN, TP, TN)
 
-Evaluation measure: Precision, Recall, F-Score for each class
+Evaluation measure: Precision, Recall, F-Score for each class 
+
+Adding feature selection soon!
