@@ -127,7 +127,8 @@ for word in list_vocab:
     else:
         tru_token = False
         rc_tru = 0
-
+    
+    # removing rare tokens
     if rc_tru + rc_dec < 3:
         if dec_token:
             dec_word_list.pop(word)
